@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 	
 	private DepartmentService service;
 
@@ -89,7 +90,11 @@ public class DepartmentListController implements Initializable {
 			DepartmentFormContoller contoller = loader.getController();
 			contoller.setDepartment(obj);
 			contoller.setDepartmentService(new DepartmentService());
+			
+			contoller.subscribeDataChangeListener(this);
+			
 			contoller.updateFormData();
+			
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department date");
@@ -102,6 +107,12 @@ public class DepartmentListController implements Initializable {
 		} catch (IOException e) {
 			Alerts.showAlert("IOE Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDateChanged() {
+		updateTableView();
+		
 	}
 
 }
